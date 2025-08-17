@@ -66,7 +66,10 @@ func (p *program) parseCommand() (command, error) {
 }
 
 func NewProgram() *program {
+	mapCmd, mapbCmd := getMapCommands()
 	commands := []command{
+		mapCmd,
+		mapbCmd,
 		helpCommand{},
 		exitCommand{},
 	}
