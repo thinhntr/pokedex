@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 )
 
@@ -20,20 +21,28 @@ func (c *Client) GetLocationArea(pageURL *string) (LocationArea, error) {
 		url = *pageURL
 	}
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return LocationArea{}, err
-	}
+	rawBytes, ok := c.cache.Get(url)
+	if !ok {
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return LocationArea{}, err
+		}
 
-	res, err := c.httpClient.Do(req)
-	if err != nil {
-		return LocationArea{}, err
+		res, err := c.httpClient.Do(req)
+		if err != nil {
+			return LocationArea{}, err
+		}
+		defer res.Body.Close()
+
+		rawBytes, err = io.ReadAll(res.Body)
+		if err != nil {
+			return LocationArea{}, err
+		}
+		c.cache.Add(url, rawBytes)
 	}
-	defer res.Body.Close()
 
 	var locationArea LocationArea
-	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&locationArea)
+	err := json.Unmarshal(rawBytes, &locationArea)
 	if err != nil {
 		return LocationArea{}, err
 	}
