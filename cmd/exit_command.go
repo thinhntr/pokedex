@@ -7,9 +7,9 @@ func (c exitCommand) name() string {
 }
 
 func (c exitCommand) description() string {
-	return "Exit the Pokedex"
+	return "exit the Pokedex"
 }
 
-func (c exitCommand) run() (string, error) {
+func (c exitCommand) run(args []string) (string, error) {
 	return "Closing the Pokedex... Goodbye!", ErrProgramQuit
 }

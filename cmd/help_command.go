@@ -13,10 +13,10 @@ func (c helpCommand) name() string {
 }
 
 func (c helpCommand) description() string {
-	return "Displays a help message"
+	return "displays a help message"
 }
 
-func (c helpCommand) run() (string, error) {
+func (c helpCommand) run(args []string) (string, error) {
 	var b strings.Builder
 
 	b.WriteString("Welcome to the Pokedex!\n")

@@ -12,7 +12,7 @@ var ErrProgramQuit = errors.New("program received signal to quit")
 type command interface {
 	name() string
 	description() string
-	run() (string, error)
+	run(args []string) (string, error)
 }
 
 type program struct {
@@ -22,7 +22,7 @@ type program struct {
 
 func (p *program) Run() error {
 	for {
-		cmd, err := p.parseCommand()
+		cmd, args, err := p.parseCommand()
 		if err != nil {
 			return err
 		}
@@ -31,7 +31,7 @@ func (p *program) Run() error {
 			continue
 		}
 
-		res, err := cmd.run()
+		res, err := cmd.run(args)
 		switch err {
 		case nil:
 			fmt.Println(res)
@@ -44,35 +44,33 @@ func (p *program) Run() error {
 	}
 }
 
-func (p *program) parseCommand() (command, error) {
+func (p *program) parseCommand() (cmd command, args []string, err error) {
 	fmt.Print("Pokedex > ")
 	if p.scanner.Scan() {
 		line := p.scanner.Text()
 		tokens := cleanInput(line)
 		if len(tokens) < 1 {
-			return nil, nil
+			return nil, []string{}, nil
 		}
 
 		cmd, ok := p.commands[tokens[0]]
 		if !ok {
-			return nil, nil
+			return nil, []string{}, nil
 		}
-		return cmd, nil
+		return cmd, tokens[1:], nil
 	}
 	if err := p.scanner.Err(); err != nil {
-		return nil, err
+		return nil, []string{}, err
 	}
-	return nil, errors.New("program reached EOF")
+	return nil, []string{}, errors.New("program reached EOF")
 }
 
 func NewProgram() *program {
-	mapCmd, mapbCmd := getMapCommands()
 	commands := []command{
-		mapCmd,
-		mapbCmd,
 		helpCommand{},
 		exitCommand{},
 	}
+	commands = append(commands, initSpecialCommands()...)
 	helpCmd := helpCommand{
 		commands: commands,
 	}

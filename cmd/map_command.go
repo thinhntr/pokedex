@@ -24,7 +24,7 @@ func (c mapCommand) description() string {
 	return "displays the next 20 location area names in the Pokemon world"
 }
 
-func (c mapCommand) run() (string, error) {
+func (c mapCommand) run(args []string) (string, error) {
 	res, err := c.client.GetLocationArea(c.urls.Next)
 	if err != nil {
 		return "", err

@@ -20,7 +20,7 @@ func (c mapbCommand) description() string {
 	return "displays the previous 20 location area names in the Pokemon world"
 }
 
-func (c mapbCommand) run() (string, error) {
+func (c mapbCommand) run(args []string) (string, error) {
 	if c.urls.Previous == nil {
 		return "", errors.New("first page of location area")
 	}

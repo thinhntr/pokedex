@@ -11,10 +11,11 @@ func cleanInput(text string) []string {
 	return strings.Fields(text)
 }
 
-func getMapCommands() (mapCommand, mapbCommand) {
+func initSpecialCommands() []command {
 	urls := mapCommandURLs{}
 	client := client.NewClient()
 	mapCmd := mapCommand{client: client, urls: &urls}
 	mapbCmd := mapbCommand{client: client, urls: &urls}
-	return mapCmd, mapbCmd
+	exploreCmd := exploreCommand{client: client}
+	return []command{mapCmd, mapbCmd, exploreCmd}
 }
