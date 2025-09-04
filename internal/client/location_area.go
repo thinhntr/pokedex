@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -75,6 +76,9 @@ func (c *Client) GetLocationAreaDetails(locationName string) (LocationAreaDetail
 			return LocationAreaDetails{}, err
 		}
 		defer res.Body.Close()
+		if res.StatusCode != 200 {
+			return LocationAreaDetails{}, fmt.Errorf("location area \"%s\" not found\n", locationName)
+		}
 
 		rawBytes, err = io.ReadAll(res.Body)
 		if err != nil {
