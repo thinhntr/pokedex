@@ -41,11 +41,6 @@ func (c catchCommand) run(args []string) (string, error) {
 	wasCaught := rollScore < catchScore
 
 	builder.WriteString(fmt.Sprintf("Throwing a Pokeball at %s...\n", pokemon))
-	builder.WriteString(fmt.Sprintf("%s's info: \n", pokemon))
-	builder.WriteString(fmt.Sprintf("  Name, %s\n", pokemon))
-	builder.WriteString(fmt.Sprintf("  Species: %s\n", res.Species.Name))
-	builder.WriteString(fmt.Sprintf("  BaseExperience: %d\n", res.BaseExperience))
-	builder.WriteString(fmt.Sprintf("  Chance: %.3f\n", catchScore))
 
 	if wasCaught {
 		builder.WriteString(fmt.Sprintf("%s was caught!\n", pokemon))
