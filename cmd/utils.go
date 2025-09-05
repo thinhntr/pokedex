@@ -19,6 +19,7 @@ func initSpecialCommands() []command {
 	mapCmd := mapCommand{client: c, urls: &urls}
 	mapbCmd := mapbCommand{client: c, urls: &urls}
 	exploreCmd := exploreCommand{client: c}
+	pokedexCmd := pokedexCommand{caughtPokemon: caughtPokemon}
 	catchCmd := catchCommand{
 		client:        c,
 		caughtPokemon: caughtPokemon,
@@ -28,5 +29,11 @@ func initSpecialCommands() []command {
 		caughtPokemon: caughtPokemon,
 	}
 
-	return []command{mapCmd, mapbCmd, exploreCmd, catchCmd, inspectCmd}
+	return []command{mapCmd,
+		mapbCmd,
+		exploreCmd,
+		catchCmd,
+		inspectCmd,
+		pokedexCmd,
+	}
 }
