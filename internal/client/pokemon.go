@@ -7,14 +7,31 @@ import (
 	"net/http"
 )
 
+type PokemonStat struct {
+	BaseStat int `json:"base_stat"`
+	Stat     struct {
+		Name string `json:"name"`
+	} `json:"stat"`
+}
+
+type PokemonType struct {
+	Type struct {
+		Name string `json:"name"`
+	} `json:"type"`
+}
+
 type Pokemon struct {
 	Species struct {
 		Name string `json:"name"`
 		URL  string `json:"url"`
 	} `json:"species"`
-	Name           string `json:"name"`
-	Order          int    `json:"order"`
-	BaseExperience int    `json:"base_experience"`
+	Stats          []PokemonStat `json:"stats"`
+	Types          []PokemonType `json:"types"`
+	Name           string        `json:"name"`
+	Height         int           `json:"height"`
+	Weight         int           `json:"weight"`
+	Order          int           `json:"order"`
+	BaseExperience int           `json:"base_experience"`
 }
 
 func (c *Client) GetPokemon(pokemonName string) (Pokemon, error) {

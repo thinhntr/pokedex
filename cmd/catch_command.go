@@ -12,7 +12,7 @@ import (
 
 type catchCommand struct {
 	client        *client.Client
-	caughtPokemon map[string]int
+	caughtPokemon map[string]client.Pokemon
 }
 
 func (c catchCommand) name() string {
@@ -36,24 +36,27 @@ func (c catchCommand) run(args []string) (string, error) {
 
 	var builder strings.Builder
 
+	builder.WriteString(fmt.Sprintf("Throwing a Pokeball at %s...\n", pokemon))
+
+	if _, wasCaught := c.caughtPokemon[pokemon]; wasCaught {
+		builder.WriteString(fmt.Sprintf("%s was caught!\n", pokemon))
+		return builder.String(), nil
+	}
+
 	e := float64(res.BaseExperience)
 	catchScore := math.Abs(math.Pow(e, 0.9))
 	rollScore := rand.Float64() * e
 	isCaught := rollScore < catchScore
 
-	builder.WriteString(fmt.Sprintf("Throwing a Pokeball at %s...\n", pokemon))
-
-	if count, wasCaught := c.caughtPokemon[pokemon]; wasCaught {
+	if isCaught {
 		builder.WriteString(fmt.Sprintf("%s was caught!\n", pokemon))
-		c.caughtPokemon[pokemon] = count + 1
-	} else if isCaught {
-		builder.WriteString(fmt.Sprintf("%s was caught!\n", pokemon))
-		c.caughtPokemon[pokemon] = 1
-	} else {
-		builder.WriteString(fmt.Sprintf("you rolled: %.3f\n", rollScore))
-		builder.WriteString(fmt.Sprintf("your score must be < %.3f\n", catchScore))
-		builder.WriteString(fmt.Sprintf("%s escaped!\n", pokemon))
+		c.caughtPokemon[pokemon] = res
+		return builder.String(), nil
 	}
+
+	builder.WriteString(fmt.Sprintf("you rolled: %.3f\n", rollScore))
+	builder.WriteString(fmt.Sprintf("your score must be < %.3f\n", catchScore))
+	builder.WriteString(fmt.Sprintf("%s escaped!\n", pokemon))
 
 	return builder.String(), nil
 
