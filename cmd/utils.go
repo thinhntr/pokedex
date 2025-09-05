@@ -14,9 +14,14 @@ func cleanInput(text string) []string {
 func initSpecialCommands() []command {
 	urls := mapCommandURLs{}
 	client := client.NewClient()
+	caughtPokemon := map[string]int{}
+
 	mapCmd := mapCommand{client: client, urls: &urls}
 	mapbCmd := mapbCommand{client: client, urls: &urls}
 	exploreCmd := exploreCommand{client: client}
-	catchCmd := catchCommand{client: client}
+	catchCmd := catchCommand{
+		client:        client,
+		caughtPokemon: caughtPokemon,
+	}
 	return []command{mapCmd, mapbCmd, exploreCmd, catchCmd}
 }
